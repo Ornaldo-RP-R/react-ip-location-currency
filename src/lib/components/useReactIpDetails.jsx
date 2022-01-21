@@ -119,7 +119,6 @@ const useReactIpDetails = (props = {}) => {
     exchangeRate,
     ipResponse,
     exchangeRateResponse,
-    locale,
     errorMessage,
     geoLocationPosition,
     geoLocationErrorMessage,

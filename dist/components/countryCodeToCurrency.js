@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _default = {
+const countryCodeToCurrency = {
   AD: 'EUR',
   AE: 'AED',
   AF: 'AFN',
@@ -255,4 +255,5 @@ var _default = {
   ZM: 'ZMW',
   ZW: 'USD'
 };
+var _default = countryCodeToCurrency;
 exports.default = _default;
