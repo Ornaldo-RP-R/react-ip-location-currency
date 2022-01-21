@@ -1,0 +1,83 @@
+{
+  "name": "react-ip-location-currency",
+  "description": "Get user location/ip-details/geo position/currency convert based on api or navigation",
+  "author": "ornaldo",
+  "keywords": [
+    "react-ip-location-currency",
+    "ip",
+    "location",
+    "country",
+    "city",
+    "currency",
+    "exchange",
+    "code",
+    "country code",
+    "react-ip",
+    "react-location",
+    "location-currency",
+    "ip-location",
+    "ip-country",
+    "find user country",
+    "user country",
+    "country by ip"
+  ],
+  "version": "1.0.1",
+  "private": false,
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ornaldo-RP-R/react-ip-location-currency"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "core-js": "^3.12.1",
+    "node-sass": "^5.0.0",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "sass": "node-sass src/lib/components/styles/main.scss src/App.css -w",
+    "beforePatchGitAdd": "git add .",
+    "preBeforePatchGitCommit": "npm run beforePatchGitAdd",
+    "BeforePatchGitCommit": "git commit -m m || true",
+    "preBeforePatchGitPush": "npm run BeforePatchGitCommit",
+    "BeforePatchGitPush": "git push -u origin main || true",
+    "prepatch": "npm run BeforePatchGitPush",
+    "patch": "npm version patch",
+    "preGitAdd": "npm run patch",
+    "GitAdd": "git add .",
+    "preGitCommit": "npm run GitAdd",
+    "GitCommit": "git commit -m m || true",
+    "preGitDeploy": "npm run GitCommit",
+    "GitDeploy": "git push -u origin main || true",
+    "preBuild": "npm run GitDeploy",
+    "Build": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files",
+    "predeploy": "npm run Build",
+    "deploy": "npm publish",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "devDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "@babel/cli": "^7.13.14",
+    "@babel/core": "^7.13.14",
+    "@babel/preset-env": "^7.13.12"
+  }
+}
