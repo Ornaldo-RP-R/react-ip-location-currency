@@ -105,8 +105,14 @@ const useReactIpDetails = (props = {}) => {
   useEffect(() => {
     setCurrencyString(getCurrencyString());
   }, [getCurrencyString]);
-  useEffect(getLocation, []);
-  useEffect(forceUpdateLocation && getLocation, [forceUpdateLocation]);
+  useEffect(()=>{
+    getLocation()
+  }, []);
+  useEffect(()=>{
+    if(forceUpdateLocation){
+      getLocation()
+    }
+  }, [forceUpdateLocation]);
 
   return {
     currency,

@@ -40,7 +40,7 @@ const defaultProps = {
   exchangeRateUrl: "https://api.exchangerate-api.com/v4/latest/"
 };
 
-const useReactIpLocationCurrency = function useReactIpLocationCurrency() {
+const useReactIpDetails = function useReactIpDetails() {
   let props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
   const {
@@ -121,7 +121,7 @@ const useReactIpLocationCurrency = function useReactIpLocationCurrency() {
         setErrorMessage("Something went wrong");
       });
     }
-  }, [onlyPosition, requests, reset]);
+  }, [onlyPosition, requests, reset, codeCountryToCurrency, codeCountryToLocal]);
   (0, _react.useEffect)(() => {
     setCurrencyString(getCurrencyString());
   }, [getCurrencyString]);
@@ -140,5 +140,5 @@ const useReactIpLocationCurrency = function useReactIpLocationCurrency() {
   };
 };
 
-var _default = useReactIpLocationCurrency;
+var _default = useReactIpDetails;
 exports.default = _default;

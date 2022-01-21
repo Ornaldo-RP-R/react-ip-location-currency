@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _ReactIpLocationCurrency = _interopRequireDefault(require("./components/ReactIpLocationCurrency"));
+var _useReactIpDetails = _interopRequireDefault(require("./components/useReactIpDetails"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _default = _ReactIpLocationCurrency.default;
+var _default = _useReactIpDetails.default;
 exports.default = _default;
