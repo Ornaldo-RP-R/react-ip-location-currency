@@ -1,4 +1,4 @@
-export default {
+ const countryCodeToCurrency= {
 	AD: 'EUR',
 	AE: 'AED',
 	AF: 'AFN',
@@ -249,3 +249,5 @@ export default {
 	ZM: 'ZMW',
 	ZW: 'USD',
 };
+
+export default countryCodeToCurrency

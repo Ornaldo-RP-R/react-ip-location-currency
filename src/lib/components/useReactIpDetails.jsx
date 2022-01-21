@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "preact/compat";
+import { useState, useCallback, useEffect } from "react";
 import codeToCurrency from "./countryCodeToCurrency";
 import codeToLocal from "./countryCodesToLocal";
 

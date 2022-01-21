@@ -1,4 +1,4 @@
-export default {
+ const countriesToLocal = {
 	US: 'en-US',
 	CA: 'en-CA',
 	AU: 'en-AU',
@@ -12,4 +12,5 @@ export default {
 	HK: 'zh-HK',
 	SG: 'zh-SG',
 	DK: 'da-DK',
-};
+}; 
+export default countriesToLocal

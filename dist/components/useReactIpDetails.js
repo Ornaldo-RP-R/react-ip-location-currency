@@ -15,7 +15,7 @@ require("core-js/modules/es.promise.js");
 
 require("core-js/modules/es.number.to-fixed.js");
 
-var _hooks = require("preact/hooks");
+var _compat = require("preact/compat");
 
 var _countryCodeToCurrency = _interopRequireDefault(require("./countryCodeToCurrency"));
 
@@ -56,15 +56,15 @@ const useReactIpDetails = function useReactIpDetails() {
     codeCountryToLocal
   } = _objectSpread(_objectSpread({}, defaultProps), props);
 
-  const [currency, setCurrency] = (0, _hooks.useState)(defaultCurrency);
-  const [exchangeRate, setExchangeRate] = (0, _hooks.useState)("1.00");
-  const [ipResponse, setIpResponse] = (0, _hooks.useState)();
-  const [exchangeRateResponse, setExchangeRateResponse] = (0, _hooks.useState)();
-  const [locale, setLocale] = (0, _hooks.useState)("en-US");
-  const [errorMessage, setErrorMessage] = (0, _hooks.useState)();
-  const [geoLocationPosition, setGeoLocationPosition] = (0, _hooks.useState)();
-  const [geoLocationErrorMessage, setGeoLocationErrorMessage] = (0, _hooks.useState)();
-  const [currencyString, setCurrencyString] = (0, _hooks.useState)();
+  const [currency, setCurrency] = (0, _compat.useState)(defaultCurrency);
+  const [exchangeRate, setExchangeRate] = (0, _compat.useState)("1.00");
+  const [ipResponse, setIpResponse] = (0, _compat.useState)();
+  const [exchangeRateResponse, setExchangeRateResponse] = (0, _compat.useState)();
+  const [locale, setLocale] = (0, _compat.useState)("en-US");
+  const [errorMessage, setErrorMessage] = (0, _compat.useState)();
+  const [geoLocationPosition, setGeoLocationPosition] = (0, _compat.useState)();
+  const [geoLocationErrorMessage, setGeoLocationErrorMessage] = (0, _compat.useState)();
+  const [currencyString, setCurrencyString] = (0, _compat.useState)();
 
   const onSuccess = (response, callback, onFail) => {
     if (response && response.status === 200) {
@@ -72,26 +72,26 @@ const useReactIpDetails = function useReactIpDetails() {
     } else if (onFail) onFail();
   };
 
-  const getCurrencyString = (0, _hooks.useCallback)(() => {
+  const getCurrencyString = (0, _compat.useCallback)(() => {
     const formatter = new Intl.NumberFormat(locale, {
       style: "currency",
       currency
     });
     return formatter.format(parseFloat((exchangeRate * numberToConvert).toString()));
   }, [locale, currency, numberToConvert, exchangeRate]);
-  const reset = (0, _hooks.useCallback)(() => {
+  const reset = (0, _compat.useCallback)(() => {
     setCurrency(defaultCurrency);
     setExchangeRate("1.00");
     setLocale("en-US");
     setErrorMessage("Make sure location is allowed by browser");
   }, [defaultCurrency]);
-  const requests = (0, _hooks.useCallback)(() => Promise.all([!onlyExchangeRate && fetch(detailsByIpUrl), !onlyIpDetails && fetch("".concat(exchangeRateUrl).concat(defaultCurrency))]), [onlyExchangeRate, detailsByIpUrl, onlyIpDetails, exchangeRateUrl, defaultCurrency]);
+  const requests = (0, _compat.useCallback)(() => Promise.all([!onlyExchangeRate && fetch(detailsByIpUrl), !onlyIpDetails && fetch("".concat(exchangeRateUrl).concat(defaultCurrency))]), [onlyExchangeRate, detailsByIpUrl, onlyIpDetails, exchangeRateUrl, defaultCurrency]);
 
   const positionFound = position => setGeoLocationPosition(position);
 
   const positionNotFound = () => setGeoLocationErrorMessage("No location found");
 
-  const getLocation = (0, _hooks.useCallback)(() => {
+  const getLocation = (0, _compat.useCallback)(() => {
     navigator.geolocation.getCurrentPosition(positionFound, positionNotFound);
 
     if (!onlyPosition) {
@@ -122,13 +122,13 @@ const useReactIpDetails = function useReactIpDetails() {
       });
     }
   }, [onlyPosition, requests, reset, codeCountryToCurrency, codeCountryToLocal]);
-  (0, _hooks.useEffect)(() => {
+  (0, _compat.useEffect)(() => {
     setCurrencyString(getCurrencyString());
   }, [getCurrencyString]);
-  (0, _hooks.useEffect)(() => {
+  (0, _compat.useEffect)(() => {
     getLocation();
   }, []);
-  (0, _hooks.useEffect)(() => {
+  (0, _compat.useEffect)(() => {
     if (forceUpdateLocation) {
       getLocation();
     }
