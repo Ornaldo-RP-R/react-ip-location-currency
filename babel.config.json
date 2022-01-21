@@ -12,7 +12,6 @@
    "useBuiltIns": "usage",
    "corejs": "3.6.5"
     }
-],
-   "@babel/preset-preact"
+]
 ]
 }
