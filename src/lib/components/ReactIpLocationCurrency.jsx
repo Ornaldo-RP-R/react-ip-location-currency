@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
-import codeToCurrency from "../constants/countryCodeToCurrency";
-import codeToLocal from "../constants/countryCodesToLocal";
+import codeToCurrency from "./countryCodeToCurrency";
+import codeToLocal from "./countryCodesToLocal";
 
 const defaultProps = {
   defaultCurrency: "USD",
