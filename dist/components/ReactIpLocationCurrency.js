@@ -17,9 +17,9 @@ require("core-js/modules/es.number.to-fixed.js");
 
 var _react = require("react");
 
-var _countryCodeToCurrency = _interopRequireDefault(require("../constants/countryCodeToCurrency"));
+var _countryCodeToCurrency = _interopRequireDefault(require("./countryCodeToCurrency"));
 
-var _countryCodesToLocal = _interopRequireDefault(require("../constants/countryCodesToLocal"));
+var _countryCodesToLocal = _interopRequireDefault(require("./countryCodesToLocal"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
