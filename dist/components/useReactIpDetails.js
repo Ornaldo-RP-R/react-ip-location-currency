@@ -125,8 +125,14 @@ const useReactIpDetails = function useReactIpDetails() {
   (0, _react.useEffect)(() => {
     setCurrencyString(getCurrencyString());
   }, [getCurrencyString]);
-  (0, _react.useEffect)(getLocation, []);
-  (0, _react.useEffect)(forceUpdateLocation && getLocation, [forceUpdateLocation]);
+  (0, _react.useEffect)(() => {
+    getLocation();
+  }, []);
+  (0, _react.useEffect)(() => {
+    if (forceUpdateLocation) {
+      getLocation();
+    }
+  }, [forceUpdateLocation]);
   return {
     currency,
     exchangeRate,

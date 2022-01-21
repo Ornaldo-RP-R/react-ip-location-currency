@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "preact/hooks";
 import codeToCurrency from "./countryCodeToCurrency";
 import codeToLocal from "./countryCodesToLocal";
 
