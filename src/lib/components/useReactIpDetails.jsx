@@ -13,7 +13,7 @@ const defaultProps = {
   exchangeRateUrl: "https://api.exchangerate-api.com/v4/latest/",
 };
 
-const useReactIpLocationCurrency = (props = {}) => {
+const useReactIpDetails = (props = {}) => {
   const {
     defaultCurrency,
     detailsByIpUrl,
@@ -100,7 +100,7 @@ const useReactIpLocationCurrency = (props = {}) => {
           setErrorMessage("Something went wrong");
         });
     }
-  }, [onlyPosition, requests, reset]);
+  }, [onlyPosition, requests, reset,codeCountryToCurrency,codeCountryToLocal]);
 
   useEffect(() => {
     setCurrencyString(getCurrencyString());
@@ -121,4 +121,4 @@ const useReactIpLocationCurrency = (props = {}) => {
   };
 };
 
-export default useReactIpLocationCurrency;
+export default useReactIpDetails;

@@ -35,6 +35,7 @@ const defaultProps = {
   onlyPosition: false,
   onlyIpDetails: false,
   forceUpdateLocation: false,
+  numberToConvert: 0,
   detailsByIpUrl: "https://geolocation-db.com/json/",
   exchangeRateUrl: "https://api.exchangerate-api.com/v4/latest/"
 };
@@ -76,7 +77,7 @@ const useReactIpLocationCurrency = function useReactIpLocationCurrency() {
       style: "currency",
       currency
     });
-    return formatter.format(parseFloat((exchangeRate * numberToConvert || 0).toString()));
+    return formatter.format(parseFloat((exchangeRate * numberToConvert).toString()));
   }, [locale, currency, numberToConvert, exchangeRate]);
   const reset = (0, _react.useCallback)(() => {
     setCurrency(defaultCurrency);

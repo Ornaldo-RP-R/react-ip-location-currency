@@ -1,9 +1,9 @@
 {
-  "name": "react-ip-location-currency",
+  "name": "react-ip-details",
   "description": "Get user location/ip-details/geo position/currency convert based on api or navigation",
   "author": "ornaldo",
   "keywords": [
-    "react-ip-location-currency",
+    "react-ip-details",
     "ip",
     "location",
     "country",
@@ -32,7 +32,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ornaldo-RP-R/react-ip-location-currency"
+    "url": "git+https://github.com/Ornaldo-RP-R/react-ip-details"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",

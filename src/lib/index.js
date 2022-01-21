@@ -1,3 +1,3 @@
-import ReactIpLocationCurrency from "./components/ReactIpLocationCurrency";
+import useReactIpDetails from "./components/useReactIpDetails";
 
-export default ReactIpLocationCurrency;
+export default useReactIpDetails;
