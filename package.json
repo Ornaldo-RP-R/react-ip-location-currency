@@ -21,7 +21,7 @@
     "user country",
     "country by ip"
   ],
-  "version": "1.0.18",
+  "version": "1.0.19",
   "private": false,
   "main": "dist/index.js",
   "module": "dist/index.js",
