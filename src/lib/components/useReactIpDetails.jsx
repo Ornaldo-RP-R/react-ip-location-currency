@@ -8,7 +8,7 @@ const defaultProps = {
   onlyPosition: false,
   onlyIpDetails: false,
   forceUpdateLocation: false,
-  numberToConvert:0,
+  numberToConvert: 0,
   detailsByIpUrl: "https://geolocation-db.com/json/",
   exchangeRateUrl: "https://api.exchangerate-api.com/v4/latest/",
 };
@@ -42,13 +42,18 @@ const useReactIpDetails = (props = {}) => {
     } else if (onFail) onFail();
   };
 
-  const getCurrencyString = useCallback(() => {
-    const formatter = new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency,
-    });
-    return formatter.format(parseFloat((exchangeRate * numberToConvert).toString()));
-  }, [locale, currency, numberToConvert, exchangeRate]);
+  const getCurrencyString = useCallback(
+    (price) => {
+      const formatter = new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency,
+      });
+      return formatter.format(
+        parseFloat((exchangeRate * price || numberToConvert).toString())
+      );
+    },
+    [locale, currency, numberToConvert, exchangeRate]
+  );
 
   const reset = useCallback(() => {
     setCurrency(defaultCurrency);
@@ -63,11 +68,18 @@ const useReactIpDetails = (props = {}) => {
         !onlyExchangeRate && fetch(detailsByIpUrl),
         !onlyIpDetails && fetch(`${exchangeRateUrl}${defaultCurrency}`),
       ]),
-    [onlyExchangeRate, detailsByIpUrl, onlyIpDetails, exchangeRateUrl, defaultCurrency]
+    [
+      onlyExchangeRate,
+      detailsByIpUrl,
+      onlyIpDetails,
+      exchangeRateUrl,
+      defaultCurrency,
+    ]
   );
 
   const positionFound = (position) => setGeoLocationPosition(position);
-  const positionNotFound = () => setGeoLocationErrorMessage("No location found");
+  const positionNotFound = () =>
+    setGeoLocationErrorMessage("No location found");
 
   const getLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(positionFound, positionNotFound);
@@ -85,10 +97,18 @@ const useReactIpDetails = (props = {}) => {
             ipResponse,
             (ipResponseData) => {
               setIpResponse(ipResponseData);
-              const newCurrency = (codeCountryToCurrency || codeToCurrency)[ipResponseData.country_code];
+              const newCurrency = (codeCountryToCurrency || codeToCurrency)[
+                ipResponseData.country_code
+              ];
               setCurrency(newCurrency || "USD");
-              setLocale((codeCountryToLocal || codeToLocal)[ipResponseData.country_code] || "en-US");
-              onExchangeRes((data) => setExchangeRate(data.rates[newCurrency].toFixed(2)));
+              setLocale(
+                (codeCountryToLocal || codeToLocal)[
+                  ipResponseData.country_code
+                ] || "en-US"
+              );
+              onExchangeRes((data) =>
+                setExchangeRate(data.rates[newCurrency].toFixed(2))
+              );
             },
             () => {
               reset();
@@ -100,17 +120,23 @@ const useReactIpDetails = (props = {}) => {
           setErrorMessage("Something went wrong");
         });
     }
-  }, [onlyPosition, requests, reset,codeCountryToCurrency,codeCountryToLocal]);
+  }, [
+    onlyPosition,
+    requests,
+    reset,
+    codeCountryToCurrency,
+    codeCountryToLocal,
+  ]);
 
   useEffect(() => {
     setCurrencyString(getCurrencyString());
   }, [getCurrencyString]);
-  useEffect(()=>{
-    getLocation()
+  useEffect(() => {
+    getLocation();
   }, []);
-  useEffect(()=>{
-    if(forceUpdateLocation){
-      getLocation()
+  useEffect(() => {
+    if (forceUpdateLocation) {
+      getLocation();
     }
   }, [forceUpdateLocation]);
 
@@ -123,6 +149,7 @@ const useReactIpDetails = (props = {}) => {
     geoLocationPosition,
     geoLocationErrorMessage,
     currencyString,
+    getCurrencyString,
   };
 };
 

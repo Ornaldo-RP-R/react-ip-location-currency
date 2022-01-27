@@ -138,7 +138,6 @@ const useReactIpDetails = function useReactIpDetails() {
     exchangeRate,
     ipResponse,
     exchangeRateResponse,
-    locale,
     errorMessage,
     geoLocationPosition,
     geoLocationErrorMessage,
