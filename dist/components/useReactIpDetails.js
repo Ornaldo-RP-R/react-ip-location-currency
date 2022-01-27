@@ -77,7 +77,7 @@ const useReactIpDetails = function useReactIpDetails() {
       style: "currency",
       currency
     });
-    return formatter.format(parseFloat((exchangeRate * price || numberToConvert).toString()));
+    return formatter.format(parseFloat((exchangeRate * (!Number.isNaN(price) ? price : numberToConvert)).toString()));
   }, [locale, currency, numberToConvert, exchangeRate]);
   const reset = (0, _react.useCallback)(() => {
     setCurrency(defaultCurrency);
