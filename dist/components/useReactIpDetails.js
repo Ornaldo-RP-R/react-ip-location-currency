@@ -1,19 +1,15 @@
 "use strict";
 
+require("core-js/modules/es6.symbol.js");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
 
-require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/web.dom.iterable.js");
 
-require("core-js/modules/es.parse-float.js");
-
-require("core-js/modules/es.regexp.to-string.js");
-
-require("core-js/modules/es.promise.js");
-
-require("core-js/modules/es.number.to-fixed.js");
+require("core-js/modules/es6.regexp.to-string.js");
 
 var _react = require("react");
 
