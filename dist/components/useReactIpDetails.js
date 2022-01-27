@@ -1,30 +1,6 @@
-"use strict";
-
-require("core-js/modules/es6.symbol.js");
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-require("core-js/modules/web.dom.iterable.js");
-
-require("core-js/modules/es6.regexp.to-string.js");
-
-var _react = require("react");
-
-var _countryCodeToCurrency = _interopRequireDefault(require("./countryCodeToCurrency"));
-
-var _countryCodesToLocal = _interopRequireDefault(require("./countryCodesToLocal"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+import { useState, useCallback, useEffect } from "react";
+import codeToCurrency from "./countryCodeToCurrency";
+import codeToLocal from "./countryCodesToLocal";
 const defaultProps = {
   defaultCurrency: "USD",
   onlyExchangeRate: false,
@@ -36,9 +12,7 @@ const defaultProps = {
   exchangeRateUrl: "https://api.exchangerate-api.com/v4/latest/"
 };
 
-const useReactIpDetails = function useReactIpDetails() {
-  let props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
+const useReactIpDetails = (props = {}) => {
   const {
     defaultCurrency,
     detailsByIpUrl,
@@ -50,17 +24,18 @@ const useReactIpDetails = function useReactIpDetails() {
     numberToConvert,
     codeCountryToCurrency,
     codeCountryToLocal
-  } = _objectSpread(_objectSpread({}, defaultProps), props);
-
-  const [currency, setCurrency] = (0, _react.useState)(defaultCurrency);
-  const [exchangeRate, setExchangeRate] = (0, _react.useState)("1.00");
-  const [ipResponse, setIpResponse] = (0, _react.useState)();
-  const [exchangeRateResponse, setExchangeRateResponse] = (0, _react.useState)();
-  const [locale, setLocale] = (0, _react.useState)("en-US");
-  const [errorMessage, setErrorMessage] = (0, _react.useState)();
-  const [geoLocationPosition, setGeoLocationPosition] = (0, _react.useState)();
-  const [geoLocationErrorMessage, setGeoLocationErrorMessage] = (0, _react.useState)();
-  const [currencyString, setCurrencyString] = (0, _react.useState)();
+  } = { ...defaultProps,
+    ...props
+  };
+  const [currency, setCurrency] = useState(defaultCurrency);
+  const [exchangeRate, setExchangeRate] = useState("1.00");
+  const [ipResponse, setIpResponse] = useState();
+  const [exchangeRateResponse, setExchangeRateResponse] = useState();
+  const [locale, setLocale] = useState("en-US");
+  const [errorMessage, setErrorMessage] = useState();
+  const [geoLocationPosition, setGeoLocationPosition] = useState();
+  const [geoLocationErrorMessage, setGeoLocationErrorMessage] = useState();
+  const [currencyString, setCurrencyString] = useState();
 
   const onSuccess = (response, callback, onFail) => {
     if (response && response.status === 200) {
@@ -68,32 +43,30 @@ const useReactIpDetails = function useReactIpDetails() {
     } else if (onFail) onFail();
   };
 
-  const getCurrencyString = (0, _react.useCallback)(price => {
+  const getCurrencyString = useCallback(price => {
     const formatter = new Intl.NumberFormat(locale, {
       style: "currency",
       currency
     });
     return formatter.format(parseFloat((exchangeRate * (!Number.isNaN(price) ? price : numberToConvert)).toString()));
   }, [locale, currency, numberToConvert, exchangeRate]);
-  const reset = (0, _react.useCallback)(() => {
+  const reset = useCallback(() => {
     setCurrency(defaultCurrency);
     setExchangeRate("1.00");
     setLocale("en-US");
     setErrorMessage("Make sure location is allowed by browser");
   }, [defaultCurrency]);
-  const requests = (0, _react.useCallback)(() => Promise.all([!onlyExchangeRate && fetch(detailsByIpUrl), !onlyIpDetails && fetch("".concat(exchangeRateUrl).concat(defaultCurrency))]), [onlyExchangeRate, detailsByIpUrl, onlyIpDetails, exchangeRateUrl, defaultCurrency]);
+  const requests = useCallback(() => Promise.all([!onlyExchangeRate && fetch(detailsByIpUrl), !onlyIpDetails && fetch(`${exchangeRateUrl}${defaultCurrency}`)]), [onlyExchangeRate, detailsByIpUrl, onlyIpDetails, exchangeRateUrl, defaultCurrency]);
 
   const positionFound = position => setGeoLocationPosition(position);
 
   const positionNotFound = () => setGeoLocationErrorMessage("No location found");
 
-  const getLocation = (0, _react.useCallback)(() => {
+  const getLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(positionFound, positionNotFound);
 
     if (!onlyPosition) {
-      requests().then(_ref => {
-        let [ipResponse, exchangeResponse] = _ref;
-
+      requests().then(([ipResponse, exchangeResponse]) => {
         const onExchangeRes = callback => {
           const onExchangeResSuccess = data => {
             setExchangeRateResponse(data);
@@ -105,9 +78,9 @@ const useReactIpDetails = function useReactIpDetails() {
 
         onSuccess(ipResponse, ipResponseData => {
           setIpResponse(ipResponseData);
-          const newCurrency = (codeCountryToCurrency || _countryCodeToCurrency.default)[ipResponseData.country_code];
+          const newCurrency = (codeCountryToCurrency || codeToCurrency)[ipResponseData.country_code];
           setCurrency(newCurrency || "USD");
-          setLocale((codeCountryToLocal || _countryCodesToLocal.default)[ipResponseData.country_code] || "en-US");
+          setLocale((codeCountryToLocal || codeToLocal)[ipResponseData.country_code] || "en-US");
           onExchangeRes(data => setExchangeRate(data.rates[newCurrency].toFixed(2)));
         }, () => {
           reset();
@@ -118,13 +91,13 @@ const useReactIpDetails = function useReactIpDetails() {
       });
     }
   }, [onlyPosition, requests, reset, codeCountryToCurrency, codeCountryToLocal]);
-  (0, _react.useEffect)(() => {
+  useEffect(() => {
     setCurrencyString(getCurrencyString());
   }, [getCurrencyString]);
-  (0, _react.useEffect)(() => {
+  useEffect(() => {
     getLocation();
   }, []);
-  (0, _react.useEffect)(() => {
+  useEffect(() => {
     if (forceUpdateLocation) {
       getLocation();
     }
@@ -142,5 +115,4 @@ const useReactIpDetails = function useReactIpDetails() {
   };
 };
 
-var _default = useReactIpDetails;
-exports.default = _default;
+export default useReactIpDetails;

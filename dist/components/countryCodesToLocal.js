@@ -1,9 +1,3 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
 const countriesToLocal = {
   US: 'en-US',
   CA: 'en-CA',
@@ -19,5 +13,4 @@ const countriesToLocal = {
   SG: 'zh-SG',
   DK: 'da-DK'
 };
-var _default = countriesToLocal;
-exports.default = _default;
+export default countriesToLocal;
