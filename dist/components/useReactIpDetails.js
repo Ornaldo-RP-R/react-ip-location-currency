@@ -72,12 +72,12 @@ const useReactIpDetails = function useReactIpDetails() {
     } else if (onFail) onFail();
   };
 
-  const getCurrencyString = (0, _react.useCallback)(() => {
+  const getCurrencyString = (0, _react.useCallback)(price => {
     const formatter = new Intl.NumberFormat(locale, {
       style: "currency",
       currency
     });
-    return formatter.format(parseFloat((exchangeRate * numberToConvert).toString()));
+    return formatter.format(parseFloat((exchangeRate * price || numberToConvert).toString()));
   }, [locale, currency, numberToConvert, exchangeRate]);
   const reset = (0, _react.useCallback)(() => {
     setCurrency(defaultCurrency);
@@ -141,7 +141,8 @@ const useReactIpDetails = function useReactIpDetails() {
     errorMessage,
     geoLocationPosition,
     geoLocationErrorMessage,
-    currencyString
+    currencyString,
+    getCurrencyString
   };
 };
 

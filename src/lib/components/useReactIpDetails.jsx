@@ -49,7 +49,11 @@ const useReactIpDetails = (props = {}) => {
         currency,
       });
       return formatter.format(
-        parseFloat((exchangeRate * price || numberToConvert).toString())
+        parseFloat(
+          (
+            exchangeRate * (!Number.isNaN(price) ? price : numberToConvert)
+          ).toString()
+        )
       );
     },
     [locale, currency, numberToConvert, exchangeRate]
