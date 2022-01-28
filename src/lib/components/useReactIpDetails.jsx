@@ -101,10 +101,11 @@ const useReactIpDetails = (props = {}) => {
             ipResponse,
             (ipResponseData) => {
               setIpResponse(ipResponseData);
-              const newCurrency = (codeCountryToCurrency || codeToCurrency)[
-                ipResponseData.country_code
-              ];
-              setCurrency(newCurrency || "USD");
+              const newCurrency =
+                (codeCountryToCurrency || codeToCurrency)[
+                  ipResponseData.country_code
+                ] || defaultCurrency;
+              setCurrency(newCurrency);
               setLocale(
                 (codeCountryToLocal || codeToLocal)[
                   ipResponseData.country_code
@@ -130,6 +131,7 @@ const useReactIpDetails = (props = {}) => {
     reset,
     codeCountryToCurrency,
     codeCountryToLocal,
+    defaultCurrency,
   ]);
 
   useEffect(() => {

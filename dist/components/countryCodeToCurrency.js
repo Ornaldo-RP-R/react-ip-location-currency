@@ -1,3 +1,9 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 const countryCodeToCurrency = {
   AD: 'EUR',
   AE: 'AED',
@@ -249,4 +255,5 @@ const countryCodeToCurrency = {
   ZM: 'ZMW',
   ZW: 'USD'
 };
-export default countryCodeToCurrency;
+var _default = countryCodeToCurrency;
+exports.default = _default;
