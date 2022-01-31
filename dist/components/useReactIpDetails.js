@@ -109,8 +109,8 @@ const useReactIpDetails = function useReactIpDetails() {
 
         onSuccess(ipResponse, ipResponseData => {
           setIpResponse(ipResponseData);
-          const newCurrency = (codeCountryToCurrency || _countryCodeToCurrency.default)[ipResponseData.country_code];
-          setCurrency(newCurrency || "USD");
+          const newCurrency = (codeCountryToCurrency || _countryCodeToCurrency.default)[ipResponseData.country_code] || defaultCurrency;
+          setCurrency(newCurrency);
           setLocale((codeCountryToLocal || _countryCodesToLocal.default)[ipResponseData.country_code] || "en-US");
           onExchangeRes(data => setExchangeRate(data.rates[newCurrency].toFixed(2)));
         }, () => {
@@ -121,7 +121,7 @@ const useReactIpDetails = function useReactIpDetails() {
         setErrorMessage("Something went wrong");
       });
     }
-  }, [onlyPosition, requests, reset, codeCountryToCurrency, codeCountryToLocal]);
+  }, [onlyPosition, requests, reset, codeCountryToCurrency, codeCountryToLocal, defaultCurrency]);
   (0, _react.useEffect)(() => {
     setCurrencyString(getCurrencyString());
   }, [getCurrencyString]);

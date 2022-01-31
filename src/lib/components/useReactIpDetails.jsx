@@ -4,9 +4,9 @@ import codeToLocal from "./countryCodesToLocal";
 
 const defaultProps = {
   defaultCurrency: "USD",
-  onlyExchangeRate: false,
-  onlyPosition: false,
-  onlyIpDetails: false,
+  shouldGetExchangeRate: true,
+  shouldGetPosition: false,
+  shouldGetIpDetails: true,
   forceUpdateLocation: false,
   numberToConvert: 0,
   detailsByIpUrl: "https://geolocation-db.com/json/",
@@ -18,9 +18,9 @@ const useReactIpDetails = (props = {}) => {
     defaultCurrency,
     detailsByIpUrl,
     exchangeRateUrl,
-    onlyExchangeRate,
-    onlyIpDetails,
-    onlyPosition,
+    shouldGetExchangeRate,
+    shouldGetIpDetails,
+    shouldGetPosition,
     forceUpdateLocation,
     numberToConvert,
     codeCountryToCurrency,
@@ -69,13 +69,13 @@ const useReactIpDetails = (props = {}) => {
   const requests = useCallback(
     () =>
       Promise.all([
-        !onlyExchangeRate && fetch(detailsByIpUrl),
-        !onlyIpDetails && fetch(`${exchangeRateUrl}${defaultCurrency}`),
+        shouldGetIpDetails && fetch(detailsByIpUrl),
+        shouldGetExchangeRate && fetch(`${exchangeRateUrl}${defaultCurrency}`),
       ]),
     [
-      onlyExchangeRate,
+      shouldGetIpDetails,
       detailsByIpUrl,
-      onlyIpDetails,
+      shouldGetExchangeRate,
       exchangeRateUrl,
       defaultCurrency,
     ]
@@ -86,47 +86,46 @@ const useReactIpDetails = (props = {}) => {
     setGeoLocationErrorMessage("No location found");
 
   const getLocation = useCallback(() => {
-    navigator.geolocation.getCurrentPosition(positionFound, positionNotFound);
-    if (!onlyPosition) {
-      requests()
-        .then(([ipResponse, exchangeResponse]) => {
-          const onExchangeRes = (callback) => {
-            const onExchangeResSuccess = (data) => {
-              setExchangeRateResponse(data);
-              callback(data);
-            };
-            onSuccess(exchangeResponse, onExchangeResSuccess, reset);
+    if (shouldGetPosition)
+      navigator.geolocation.getCurrentPosition(positionFound, positionNotFound);
+    requests()
+      .then(([ipResponse, exchangeResponse]) => {
+        const onExchangeRes = (callback) => {
+          const onExchangeResSuccess = (data) => {
+            setExchangeRateResponse(data);
+            callback(data);
           };
-          onSuccess(
-            ipResponse,
-            (ipResponseData) => {
-              setIpResponse(ipResponseData);
-              const newCurrency =
-                (codeCountryToCurrency || codeToCurrency)[
-                  ipResponseData.country_code
-                ] || defaultCurrency;
-              setCurrency(newCurrency);
-              setLocale(
-                (codeCountryToLocal || codeToLocal)[
-                  ipResponseData.country_code
-                ] || "en-US"
-              );
-              onExchangeRes((data) =>
-                setExchangeRate(data.rates[newCurrency].toFixed(2))
-              );
-            },
-            () => {
-              reset();
-              onExchangeRes();
-            }
-          );
-        })
-        .catch((err) => {
-          setErrorMessage("Something went wrong");
-        });
-    }
+          onSuccess(exchangeResponse, onExchangeResSuccess, reset);
+        };
+        onSuccess(
+          ipResponse,
+          (ipResponseData) => {
+            setIpResponse(ipResponseData);
+            const newCurrency =
+              (codeCountryToCurrency || codeToCurrency)[
+                ipResponseData.country_code
+              ] || defaultCurrency;
+            setCurrency(newCurrency);
+            setLocale(
+              (codeCountryToLocal || codeToLocal)[
+                ipResponseData.country_code
+              ] || "en-US"
+            );
+            onExchangeRes((data) =>
+              setExchangeRate(data.rates[newCurrency].toFixed(2))
+            );
+          },
+          () => {
+            reset();
+            onExchangeRes();
+          }
+        );
+      })
+      .catch((err) => {
+        setErrorMessage("Something went wrong");
+      });
   }, [
-    onlyPosition,
+    shouldGetPosition,
     requests,
     reset,
     codeCountryToCurrency,
