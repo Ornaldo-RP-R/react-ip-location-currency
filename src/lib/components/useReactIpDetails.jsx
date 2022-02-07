@@ -42,13 +42,23 @@ const useReactIpDetails = (props = {}) => {
     } else if (onFail) onFail();
   };
 
-  const onExchangeRes = (response, callback) => {
-    const onExchangeResSuccess = (data) => {
-      setExchangeRateResponse(data);
-      callback(data);
-    };
-    onSuccess(response, onExchangeResSuccess, reset);
-  };
+  const reset = useCallback(() => {
+    setCurrency(defaultCurrency);
+    setExchangeRate("1.00");
+    setLocale("en-US");
+    setErrorMessage("Make sure location is allowed by browser");
+  }, [defaultCurrency]);
+
+  const onExchangeRes = useCallback(
+    (response, callback) => {
+      const onExchangeResSuccess = (data) => {
+        setExchangeRateResponse(data);
+        callback(data);
+      };
+      onSuccess(response, onExchangeResSuccess, reset);
+    },
+    [setExchangeRateResponse, reset]
+  );
 
   const getCurrencyString = useCallback(
     (price) => {
@@ -60,13 +70,6 @@ const useReactIpDetails = (props = {}) => {
     },
     [locale, currency, numberToConvert, exchangeRate]
   );
-
-  const reset = useCallback(() => {
-    setCurrency(defaultCurrency);
-    setExchangeRate("1.00");
-    setLocale("en-US");
-    setErrorMessage("Make sure location is allowed by browser");
-  }, [defaultCurrency]);
 
   const positionFound = (position) => setGeoLocationPosition(position);
   const positionNotFound = () => setGeoLocationErrorMessage("No location found");
@@ -103,6 +106,7 @@ const useReactIpDetails = (props = {}) => {
   }, [
     shouldGetPosition,
     shouldGetIpDetails,
+    onExchangeRes,
     detailsByIpUrl,
     shouldGetExchangeRate,
     exchangeRateUrl,

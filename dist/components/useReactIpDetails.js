@@ -31,9 +31,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 const defaultProps = {
   defaultCurrency: "USD",
-  onlyExchangeRate: false,
-  onlyPosition: false,
-  onlyIpDetails: false,
+  shouldGetExchangeRate: true,
+  shouldGetPosition: false,
+  shouldGetIpDetails: true,
   forceUpdateLocation: false,
   numberToConvert: 0,
   detailsByIpUrl: "https://geolocation-db.com/json/",
@@ -47,9 +47,9 @@ const useReactIpDetails = function useReactIpDetails() {
     defaultCurrency,
     detailsByIpUrl,
     exchangeRateUrl,
-    onlyExchangeRate,
-    onlyIpDetails,
-    onlyPosition,
+    shouldGetExchangeRate,
+    shouldGetIpDetails,
+    shouldGetPosition,
     forceUpdateLocation,
     numberToConvert,
     codeCountryToCurrency,
@@ -72,6 +72,15 @@ const useReactIpDetails = function useReactIpDetails() {
     } else if (onFail) onFail();
   };
 
+  const onExchangeRes = (response, callback) => {
+    const onExchangeResSuccess = data => {
+      setExchangeRateResponse(data);
+      callback(data);
+    };
+
+    onSuccess(response, onExchangeResSuccess, reset);
+  };
+
   const getCurrencyString = (0, _react.useCallback)(price => {
     const formatter = new Intl.NumberFormat(locale, {
       style: "currency",
@@ -85,34 +94,25 @@ const useReactIpDetails = function useReactIpDetails() {
     setLocale("en-US");
     setErrorMessage("Make sure location is allowed by browser");
   }, [defaultCurrency]);
-  const requests = (0, _react.useCallback)(() => Promise.all([!onlyExchangeRate && fetch(detailsByIpUrl), !onlyIpDetails && fetch("".concat(exchangeRateUrl).concat(defaultCurrency))]), [onlyExchangeRate, detailsByIpUrl, onlyIpDetails, exchangeRateUrl, defaultCurrency]);
 
   const positionFound = position => setGeoLocationPosition(position);
 
   const positionNotFound = () => setGeoLocationErrorMessage("No location found");
 
   const getLocation = (0, _react.useCallback)(() => {
-    navigator.geolocation.getCurrentPosition(positionFound, positionNotFound);
+    if (shouldGetPosition) navigator.geolocation.getCurrentPosition(positionFound, positionNotFound);
 
-    if (!onlyPosition) {
-      requests().then(_ref => {
-        let [ipResponse, exchangeResponse] = _ref;
-
-        const onExchangeRes = callback => {
-          const onExchangeResSuccess = data => {
-            setExchangeRateResponse(data);
-            callback(data);
-          };
-
-          onSuccess(exchangeResponse, onExchangeResSuccess, reset);
-        };
-
+    if (shouldGetIpDetails) {
+      fetch(detailsByIpUrl).then(ipResponse => {
         onSuccess(ipResponse, ipResponseData => {
           setIpResponse(ipResponseData);
           const newCurrency = (codeCountryToCurrency || _countryCodeToCurrency.default)[ipResponseData.country_code] || defaultCurrency;
           setCurrency(newCurrency);
           setLocale((codeCountryToLocal || _countryCodesToLocal.default)[ipResponseData.country_code] || "en-US");
-          onExchangeRes(data => setExchangeRate(data.rates[newCurrency].toFixed(2)));
+
+          if (newCurrency !== "USD" && shouldGetExchangeRate) {
+            fetch("".concat(exchangeRateUrl).concat(defaultCurrency)).then(response => onExchangeRes(response, data => setExchangeRate(data.rates[newCurrency].toFixed(2))));
+          }
         }, () => {
           reset();
           onExchangeRes();
@@ -121,7 +121,7 @@ const useReactIpDetails = function useReactIpDetails() {
         setErrorMessage("Something went wrong");
       });
     }
-  }, [onlyPosition, requests, reset, codeCountryToCurrency, codeCountryToLocal, defaultCurrency]);
+  }, [shouldGetPosition, shouldGetIpDetails, detailsByIpUrl, shouldGetExchangeRate, exchangeRateUrl, reset, codeCountryToCurrency, codeCountryToLocal, defaultCurrency]);
   (0, _react.useEffect)(() => {
     setCurrencyString(getCurrencyString());
   }, [getCurrencyString]);
