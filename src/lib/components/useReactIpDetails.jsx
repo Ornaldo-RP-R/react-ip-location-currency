@@ -42,19 +42,21 @@ const useReactIpDetails = (props = {}) => {
     } else if (onFail) onFail();
   };
 
+  const onExchangeRes = (response, callback) => {
+    const onExchangeResSuccess = (data) => {
+      setExchangeRateResponse(data);
+      callback(data);
+    };
+    onSuccess(response, onExchangeResSuccess, reset);
+  };
+
   const getCurrencyString = useCallback(
     (price) => {
       const formatter = new Intl.NumberFormat(locale, {
         style: "currency",
         currency,
       });
-      return formatter.format(
-        parseFloat(
-          (
-            exchangeRate * (!Number.isNaN(price) ? price : numberToConvert)
-          ).toString()
-        )
-      );
+      return formatter.format(parseFloat((exchangeRate * (!Number.isNaN(price) ? price : numberToConvert)).toString()));
     },
     [locale, currency, numberToConvert, exchangeRate]
   );
@@ -66,67 +68,44 @@ const useReactIpDetails = (props = {}) => {
     setErrorMessage("Make sure location is allowed by browser");
   }, [defaultCurrency]);
 
-  const requests = useCallback(
-    () =>
-      Promise.all([
-        shouldGetIpDetails && fetch(detailsByIpUrl),
-        shouldGetExchangeRate && fetch(`${exchangeRateUrl}${defaultCurrency}`),
-      ]),
-    [
-      shouldGetIpDetails,
-      detailsByIpUrl,
-      shouldGetExchangeRate,
-      exchangeRateUrl,
-      defaultCurrency,
-    ]
-  );
-
   const positionFound = (position) => setGeoLocationPosition(position);
-  const positionNotFound = () =>
-    setGeoLocationErrorMessage("No location found");
+  const positionNotFound = () => setGeoLocationErrorMessage("No location found");
 
   const getLocation = useCallback(() => {
-    if (shouldGetPosition)
-      navigator.geolocation.getCurrentPosition(positionFound, positionNotFound);
-    requests()
-      .then(([ipResponse, exchangeResponse]) => {
-        const onExchangeRes = (callback) => {
-          const onExchangeResSuccess = (data) => {
-            setExchangeRateResponse(data);
-            callback(data);
-          };
-          onSuccess(exchangeResponse, onExchangeResSuccess, reset);
-        };
-        onSuccess(
-          ipResponse,
-          (ipResponseData) => {
-            setIpResponse(ipResponseData);
-            const newCurrency =
-              (codeCountryToCurrency || codeToCurrency)[
-                ipResponseData.country_code
-              ] || defaultCurrency;
-            setCurrency(newCurrency);
-            setLocale(
-              (codeCountryToLocal || codeToLocal)[
-                ipResponseData.country_code
-              ] || "en-US"
-            );
-            onExchangeRes((data) =>
-              setExchangeRate(data.rates[newCurrency].toFixed(2))
-            );
-          },
-          () => {
-            reset();
-            onExchangeRes();
-          }
-        );
-      })
-      .catch((err) => {
-        setErrorMessage("Something went wrong");
-      });
+    if (shouldGetPosition) navigator.geolocation.getCurrentPosition(positionFound, positionNotFound);
+    if (shouldGetIpDetails) {
+      fetch(detailsByIpUrl)
+        .then((ipResponse) => {
+          onSuccess(
+            ipResponse,
+            (ipResponseData) => {
+              setIpResponse(ipResponseData);
+              const newCurrency =
+                (codeCountryToCurrency || codeToCurrency)[ipResponseData.country_code] || defaultCurrency;
+              setCurrency(newCurrency);
+              setLocale((codeCountryToLocal || codeToLocal)[ipResponseData.country_code] || "en-US");
+              if (newCurrency !== "USD" && shouldGetExchangeRate) {
+                fetch(`${exchangeRateUrl}${defaultCurrency}`).then((response) =>
+                  onExchangeRes(response, (data) => setExchangeRate(data.rates[newCurrency].toFixed(2)))
+                );
+              }
+            },
+            () => {
+              reset();
+              onExchangeRes();
+            }
+          );
+        })
+        .catch((err) => {
+          setErrorMessage("Something went wrong");
+        });
+    }
   }, [
     shouldGetPosition,
-    requests,
+    shouldGetIpDetails,
+    detailsByIpUrl,
+    shouldGetExchangeRate,
+    exchangeRateUrl,
     reset,
     codeCountryToCurrency,
     codeCountryToLocal,
