@@ -72,15 +72,20 @@ const useReactIpDetails = function useReactIpDetails() {
     } else if (onFail) onFail();
   };
 
-  const onExchangeRes = (response, callback) => {
+  const reset = (0, _react.useCallback)(() => {
+    setCurrency(defaultCurrency);
+    setExchangeRate("1.00");
+    setLocale("en-US");
+    setErrorMessage("Make sure location is allowed by browser");
+  }, [defaultCurrency]);
+  const onExchangeRes = (0, _react.useCallback)((response, callback) => {
     const onExchangeResSuccess = data => {
       setExchangeRateResponse(data);
       callback(data);
     };
 
     onSuccess(response, onExchangeResSuccess, reset);
-  };
-
+  }, [setExchangeRateResponse, reset]);
   const getCurrencyString = (0, _react.useCallback)(price => {
     const formatter = new Intl.NumberFormat(locale, {
       style: "currency",
@@ -88,12 +93,6 @@ const useReactIpDetails = function useReactIpDetails() {
     });
     return formatter.format(parseFloat((exchangeRate * (!Number.isNaN(price) ? price : numberToConvert)).toString()));
   }, [locale, currency, numberToConvert, exchangeRate]);
-  const reset = (0, _react.useCallback)(() => {
-    setCurrency(defaultCurrency);
-    setExchangeRate("1.00");
-    setLocale("en-US");
-    setErrorMessage("Make sure location is allowed by browser");
-  }, [defaultCurrency]);
 
   const positionFound = position => setGeoLocationPosition(position);
 
@@ -121,7 +120,7 @@ const useReactIpDetails = function useReactIpDetails() {
         setErrorMessage("Something went wrong");
       });
     }
-  }, [shouldGetPosition, shouldGetIpDetails, detailsByIpUrl, shouldGetExchangeRate, exchangeRateUrl, reset, codeCountryToCurrency, codeCountryToLocal, defaultCurrency]);
+  }, [shouldGetPosition, shouldGetIpDetails, onExchangeRes, detailsByIpUrl, shouldGetExchangeRate, exchangeRateUrl, reset, codeCountryToCurrency, codeCountryToLocal, defaultCurrency]);
   (0, _react.useEffect)(() => {
     setCurrencyString(getCurrencyString());
   }, [getCurrencyString]);

@@ -32,7 +32,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ornaldo-RP-R/react-ip-details"
+    "url": "git+https://github.com/Ornaldo-RP-R/react-ip-location-currency"
   },
   "dependencies": {
     "@babel/preset-env": "^7.16.1",
